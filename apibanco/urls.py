@@ -16,11 +16,31 @@ Including another URLconf
 """
 from django.urls import path
 from bd import views
-
+from django.urls import path, include
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 from bd .views import UsuarioListCreate
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="API",
+        default_version='v1',
+        description="Descrição da API",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="contact@api.local"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+
+
 
 urlpatterns = [
     path('usuario/', views.UsuarioListCreate.as_view(), name='usuario-list-create'),
     path('usuario/<str:cpf>/', views.UsuarioDetail.as_view(), name='usuario-detail'),
     path('ec2/', views.list_ec2_instances, name='list_ec2_instances'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),
+         name='schema-swagger-ui'),
 ]
